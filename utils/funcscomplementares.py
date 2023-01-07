@@ -2,7 +2,7 @@
 from time import sleep
 import os
 from banco.conta import *
-
+from utils.validacoes import *
 
 def menu():
     print('''
@@ -32,25 +32,36 @@ def criar_conta(dados_usuario):
         break
     
     while True:
-        email: str = input('Insira seu E-mail: ').strip()
-        break
+        email: str = input('Insira seu E-mail: ')
+        checa_email = valida_email(email)
 
-    while True:
-        cpf: str = input('Seu CPF (SEM pontos ou traços): ').strip()
-        
-        validate_numeric: str = cpf.isnumeric() and not '-' in cpf and not '.' in cpf
-        validate_len: int = len(cpf) == 11
-        
-        if validate_numeric and validate_len:
+        if checa_email:
             break
 
-        elif not validate_numeric: 
-            print('O CPF NÃO deve ter "-" ou ".", e deve conter somente números.')
+        else:
+            print('Insira um E-mail válido.')
+            continue 
+
+    while True:
+        cpf: str = input('Seu CPF: ')
+        checa_cpf = valida_cpf(cpf)
         
+        if checa_cpf:
+            break
         else:
             print('CPF inválido.')
+            continue
+    
+    while True:
+        data_nascimento: str = input('Informe sua data de nascimento com /: ')
+        data = valida_data(data_nascimento)
         
-    data_nascimento: str = input('Informe sua data de nascimento com /: ')
+        if not data:
+            print('Insira uma data válida.')
+            continue
+        else:
+            break
+
 
     pessoa: object = dados_usuario(nome, email, cpf, data_nascimento)
 
