@@ -23,7 +23,6 @@ def menu():
 
 
 def criar_conta(dados_usuario):
-
     while True:
         nome: str = input('Informe seu nome: ').title().strip()
         if any(char.isdigit() for char in nome):
@@ -35,38 +34,34 @@ def criar_conta(dados_usuario):
         email: str = input('Insira seu E-mail: ')
         checa_email = valida_email(email)
 
-        if checa_email:
-            break
+        if checa_email: break
 
-        else:
+        else: 
             print('Insira um E-mail válido.')
             continue 
 
     while True:
-        cpf: str = input('Seu CPF: ')
+        cpf: str = input('Insira seu CPF: ')
         checa_cpf = valida_cpf(cpf)
         
-        if checa_cpf:
-            break
+        if checa_cpf: break
+            
         else:
             print('CPF inválido.')
             continue
     
     while True:
-        data_nascimento: str = input('Informe sua data de nascimento com /: ')
+        data_nascimento: str = input('Informe sua data de nascimento com [/]: ')
         data = valida_data(data_nascimento)
         
         if not data:
             print('Insira uma data válida.')
             continue
-        else:
-            break
 
+        else: break
 
     pessoa: object = dados_usuario(nome, email, cpf, data_nascimento)
-
     print('Conta criada com sucesso!')
-
     return pessoa
 
 
@@ -87,19 +82,28 @@ def listar_contas(contas):
         os.system('cls')
 
 
-
 def atualizar_dados(contas):
     if contas:
         agencia: int = int(input('Informe sua agencia: '))
         for conta in contas:
             if agencia == conta.agencia: 
-                novo_email: str = input('Digite seu novo e-mail: ')
+                while True:
+                    novo_email: str = input('Digite seu novo E-mail: ')
+                    checa_email = valida_email(novo_email)
+
+                    if checa_email: break
+
+                    else:
+                        print('Insira um E-mail válido.')
+                        continue 
                 conta.cliente.email: str = novo_email
                 print('E-mail atualizado com sucesso.')
+                sleep(0.5)
                 return
         else:
             print(f'Não foi encontrada a agência "{agencia}"')
             return
+
     print('Nenhuma conta cadastrada.')
     sleep(1.5)
     os.system('cls')
@@ -122,10 +126,10 @@ def excluir_conta(contas):
     os.system('cls')
 
 
-
 def metodo_deposito_ou_saque(contas):
     if contas:
         escolha_metodo: int = int(input('Deseja realizar deposito(1) ou saque(2)?'))
+
         match escolha_metodo:
             case 1:   
                 agencia: int = int(input('Informe o número da sua agencia para depositar: '))
@@ -149,7 +153,6 @@ def metodo_deposito_ou_saque(contas):
                         conta.sacar(valor_saque)
                         sleep(1)
                         break
-                    
                 else:
                     print(f'Não foi encontrada a agência "{agencia}"')
                     sleep(1.5)
@@ -159,7 +162,6 @@ def metodo_deposito_ou_saque(contas):
         sleep(1.5)
         os.system('cls')
         
-
 
 def depositar(valor, agencia, contas):
     [conta.depositar(valor) for conta in contas if conta.agencia == agencia]

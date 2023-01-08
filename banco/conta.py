@@ -45,7 +45,6 @@ class Conta:
     def credito(self: object, valor: float) -> None:
         self.__credito = valor
 
-
     def __str__(self: object) -> str:
         return f'Número da agência: {self.agencia} \nCliente: {self.cliente.nome} \nSaldo: {formata_str_float(self.saldo)}'
 
@@ -72,19 +71,16 @@ class Conta:
                 \r2 - Sacar no crédito e debito\n
                 \rOpção: '''))
 
-
                 match escolha:
                     case 1:
-                        if self.limite <= 0 or credito_disponivel < valor_saque:
+                        if self.limite < 0 or credito_disponivel < valor_saque:
                             print('Limite insuficiente.')
                             return
                         self.credito += valor_saque
-                        self.saldo = valor_saque
                         self.limite -= valor_saque
                     
                         print(f'Crédito usado: {formata_str_float(self.credito)}')
                         print(f'Limite Disponível: {formata_str_float(self.limite)}')
-
                         return
 
                     case 2:
