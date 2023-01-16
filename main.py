@@ -12,8 +12,10 @@ contas: List[Conta] = []
 def main() -> None:
     while True:
         menu()
-        try:
-            opcao: int = int(input('> '))
+        opcao: str = (input('> '))
+        print(type(opcao))
+        if opcao.isdigit():
+            opcao = int(opcao)
             match opcao:
                 case 1:
                     dados: function = criar_conta(Cliente)
@@ -28,7 +30,7 @@ def main() -> None:
 
                 case 4: excluir_conta(contas)
 
-                case 5: metodo_deposito_ou_saque(contas)
+                case 5: metodo_deposito_saque(contas)
 
                 case 6: transferencia(contas)
                 
@@ -38,12 +40,10 @@ def main() -> None:
                     break
                 
                 case _:
-                    print('Opção inválida.')
-                    sleep(0.7)
-                    continue
-                
-        except ValueError:
-            print('Insira uma opção válida.')
-            sleep(0.7)
+                    print('Opção inválida, tente novamente:')
+        else:
+            print('Insira um número entre 1/6 - Sair do sistema [0].')
+            sleep(1)
+
 
 if __name__ == '__main__': main()
