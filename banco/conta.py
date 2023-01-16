@@ -78,7 +78,7 @@ class Conta:
                             return
                         self.credito += valor_saque
                         self.limite -= valor_saque
-                    
+
                         print(f'Crédito usado: {formata_str_float(self.credito)}')
                         print(f'Limite Disponível: {formata_str_float(self.limite)}')
                         return
@@ -103,7 +103,7 @@ class Conta:
                         print(f'Você tem {formata_str_float(self.limite)} de limite.')
                         print(f'Saldo atual: {formata_str_float(self.saldo)}')
                         return
-
+                    
                     case _:
                         print('Informe uma opção válida.')
                         continue
