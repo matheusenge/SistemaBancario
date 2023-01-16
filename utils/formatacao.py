@@ -12,8 +12,7 @@ def formata_str_float(valor: float) -> str:
     return f'R${valor:,.2f}'
 
 
-def horas():
+def horas() -> str:
     hora = datetime.now()
     hora = hora.strftime("%H:%M")
     return hora
-
