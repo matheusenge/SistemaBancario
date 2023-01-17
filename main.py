@@ -13,7 +13,6 @@ def main() -> None:
     while True:
         menu()
         opcao: str = (input('> '))
-        print(type(opcao))
         if opcao.isdigit():
             opcao = int(opcao)
             match opcao:
