@@ -22,11 +22,12 @@ def menu():
     ''')
 
 
-def criar_conta(dados_usuario):
+def criar_conta(dadosUsuario):
     while True:
         nome: str = input('Informe seu nome: ').title().strip()
-        if any(char.isdigit() for char in nome):
-            print('Somente Letras!')
+        valida = re.compile('[\W_]+')
+        if any(char.isdigit() for char in nome) or len(nome.strip()) < 2 or valida.search(nome) != None:
+            print("Nome inválido.")
             continue
         break
     
@@ -55,12 +56,12 @@ def criar_conta(dados_usuario):
         data = valida_data(data_nascimento)
         
         if not data:
-            print('Insira uma data válida.')
+            print('Data de nascimento inválida.')
             continue
 
         else: break
 
-    pessoa: object = dados_usuario(nome, email, cpf, data_nascimento)
+    pessoa: object = dadosUsuario(nome, email, cpf, data_nascimento)
     print('Conta criada com sucesso!')
     return pessoa
 
@@ -77,14 +78,12 @@ def listar_contas(contas):
             print(f'Limite: {formata_str_float(conta.limite)}')
             print('-=' * 20)
     else:
-        print('Nenhum cadastro encontrado.')
-        sleep(1.5)
-        os.system('cls')
+        senao()
 
 
 def atualizar_dados(contas):
     if contas:
-        agencia: int = int(input('Informe sua agencia: '))
+        agencia: int = int(input('Informe sua agência: '))
         for conta in contas:
             if agencia == conta.agencia: 
                 while True:
@@ -98,15 +97,13 @@ def atualizar_dados(contas):
                         continue 
                 conta.cliente.email: str = novo_email
                 print('E-mail atualizado com sucesso.')
-                sleep(0.5)
+                sleep(1)
                 return
         else:
-            print(f'Não foi encontrada a agência "{agencia}"')
+            print(f'Agência não encontrada. "{agencia}"')
             return
 
-    print('Nenhuma conta cadastrada.')
-    sleep(1.5)
-    os.system('cls')
+    senao()
 
 
 def excluir_conta(contas):
@@ -120,13 +117,11 @@ def excluir_conta(contas):
         else:
             print(f'Não foi encontrada a agência "{agencia}"')
             return
-             
-    print('Nenhuma conta cadastrada.')
-    sleep(1.5)
-    os.system('cls')
+
+    senao()
 
 
-def metodo_deposito_ou_saque(contas):
+def metodo_deposito_saque(contas):
     if contas:
         escolha_metodo: int = int(input('Deseja realizar deposito(1) ou saque(2)?'))
 
@@ -142,7 +137,7 @@ def metodo_deposito_ou_saque(contas):
                         break
                 else:
                     print(f'Não foi encontrada a agência "{agencia}"')
-                    sleep(1.5)
+                    sleep(1)
                     os.system('cls')
             case 2:      
                 agencia: int = int(input('Informe o número da sua agencia para saque: '))
@@ -155,12 +150,11 @@ def metodo_deposito_ou_saque(contas):
                         break
                 else:
                     print(f'Não foi encontrada a agência "{agencia}"')
-                    sleep(1.5)
+                    sleep(1)
                     os.system('cls')
+
     else:
-        print('Nenhuma conta cadastrada no sistema.')
-        sleep(1.5)
-        os.system('cls')
+        senao()
         
 
 def depositar(valor, agencia, contas):
@@ -173,8 +167,8 @@ def sacar(valor, agencia, contas):
 
 def transferencia(contas):
     if contas:
-        agencia_saque: int = int(input('Informe a sua agencia: '))
-        agencia_deposito: int = int(input('Informa a agencia que deseja depositar: '))
+        agencia_saque: int = int(input('Informe a agência: '))
+        agencia_deposito: int = int(input('Informa a agência que deseja depositar: '))
         valor: float = float(input('Valor que deseja depositar: '))
 
     for conta in contas:
@@ -182,15 +176,19 @@ def transferencia(contas):
             if conta.saldo >= valor:
                 sacar(valor, agencia_saque, contas)
                 depositar(valor, agencia_deposito, contas)
-                print('Transferencia realizada com sucesso!')   
+                print('Transferência realizada com sucesso!')
                 break
             else:
                 print('Você não tem saldo suficiente.')
                 break
         else:
-            print('Agencia não encontrada')
+            print('Agência não encontrada')
             continue
     else:
-        print('Nenhuma agencia cadastrada.')
-        sleep(1.5)
-        os.system('cls')
+        senao()
+
+
+def senao():
+    print('Nenhuma conta cadastrada.')
+    sleep(1)
+    os.system('cls')
