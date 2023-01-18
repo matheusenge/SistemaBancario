@@ -108,7 +108,7 @@ def atualizar_dados(contas):
 
 def excluir_conta(contas):
     if contas:
-        agencia: int = int(input('Informe sua agencia: '))
+        agencia: int = int(input('Informe sua agência: '))
         for conta in contas:
             if agencia == conta.agencia:
                 contas.pop()
@@ -123,7 +123,7 @@ def excluir_conta(contas):
 
 def metodo_deposito_saque(contas):
     if contas:
-        escolha_metodo: int = int(input('Deseja realizar deposito(1) ou saque(2)?'))
+        escolha_metodo: int = int(input('Deseja realizar depósito(1) ou saque(2)?'))
 
         match escolha_metodo:
             case 1:   
@@ -140,7 +140,7 @@ def metodo_deposito_saque(contas):
                     sleep(1)
                     os.system('cls')
             case 2:      
-                agencia: int = int(input('Informe o número da sua agencia para saque: '))
+                agencia: int = int(input('Informe o número da sua agência para saque: '))
          
                 for conta in contas:
                     if agencia == conta.agencia:
