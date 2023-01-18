@@ -63,12 +63,12 @@ class Conta:
             print(f'[{horas()}] Foi debitado {formata_str_float(valor_saque)} da sua conta.')
             return
         else:
-            print('Você não tem saldo suficiente para saque')
+            print('Você não tem saldo suficiente para saque.')
 
             while True:
                 escolha: int = int(input('''Escolha uma opção
                 \r1 - Sacar no crédito
-                \r2 - Sacar no crédito e debito\n
+                \r2 - Sacar no crédito e débito\n
                 \rOpção: '''))
 
                 match escolha:
