@@ -1,5 +1,16 @@
 from datetime import datetime
 import re
+from typing import Union
+
+def valida_nome(nome):
+    try:
+        valida = re.compile('^[a-zA-Z0-9 ]+$')
+        if any(char.isdigit() for char in nome) or len(nome.strip()) < 2 or valida.search(nome) == None:
+            return False
+
+        return True
+    except ValueError: return False
+
 
 def valida_email(email) -> str:
     try:
@@ -10,44 +21,34 @@ def valida_email(email) -> str:
     except ValueError: return False
 
 
-def valida_cpf(cpf) -> str:
+def valida_cpf(cpf: str) -> Union[bool, str]:
     try:
         nove_digitos = cpf[:9]
-        contador_regressivo_1 = 10
-
-        resultado_digito_1 = 0
-        for digito in nove_digitos:
-            if digito.isdigit():
-                resultado_digito_1 += int(digito) * contador_regressivo_1
-                contador_regressivo_1 -= 1
-        digito_1 = (resultado_digito_1 * 10) % 11
-        digito_1 = digito_1 if digito_1 <= 9 else 0
-
-        dez_digitos = nove_digitos + str(digito_1)
-        contador_regressivo_2 = 11
-
-        resultado_digito_2 = 0
-        for digito in dez_digitos:
-            if digito.isdigit():
-                resultado_digito_2 += int(digito) * contador_regressivo_2
-                contador_regressivo_2 -= 1
-        digito_2 = (resultado_digito_2 * 10) % 11
-        digito_2 = digito_2 if digito_2 <= 9 else 0
-
+        digito_1 = get_cpf_digit(nove_digitos, 10)
+        digito_2 = get_cpf_digit(nove_digitos + str(digito_1), 11)
         cpf_gerado_pelo_calculo = f'{nove_digitos}{digito_1}{digito_2}'
 
         if cpf == cpf_gerado_pelo_calculo:
             return True
         else: return False
     except ValueError: return False
+    
+def get_cpf_digit(numero_cpf: str, contador: int) -> int:
+    result = 0
+    for digito in numero_cpf:
+        if digito.isdigit():
+            result += int(digito) * contador
+            contador -= 1
+    digito = (result * 10) % 11
+    return digito if digito <= 9 else 0
 
 
-def valida_data(date) -> str:
+def valida_data(data: str) -> Union[datetime, str]:
     try:
-        date_dt = datetime.strptime(date, "%d/%m/%Y")
+        data_dt = datetime.strptime(data, "%d/%m/%Y")
         
-        if date_dt > datetime.now():
+        if data_dt > datetime.now():
             return False
 
-        return date_dt 
+        return data_dt 
     except ValueError: return False
