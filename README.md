@@ -6,5 +6,5 @@
 <ul><li>Criação de novas contas bancárias para clientes</li><li>Listagem de contas existentes</li><li>Atualização de dados de contas</li><li>Exclusão de contas</li><li>Depósitos e saques</li><li>Transferências entre contas</li><li>Validação de entrada de dados do usuário</li><li>Utilização de expressões pythonicas</li></ul>
 
 <h2>Considerações</h2>
-<p>Este projeto foi desenvolvido com o objetivo de fornecer um exemplo de como utilizar orientação a objetos em Python para modelar uma conta bancária e seus clientes. Ele pode ser utilizado como base para projetos maiores e mais complexos.</p>
-<p>É importante notar que este código não foi testado em ambiente de produção e pode conter erros. Certifique-se de testá-lo antes de utilizá-lo em projetos reais. Além disso, a segurança não foi levada em consideração neste projeto, portanto, é importante adicionar medidas de segurança antes de utilizá-lo em um ambiente de produção.</p>
+<p>Este projeto foi desenvolvido com o objetivo de adquirir conhecimento de como utilizar orientação a objetos em Python para modelar uma conta bancária e seus clientes. Ele pode ser utilizado como base para projetos maiores e mais complexos.</p>
+<p>É importante notar que este código não foi testado em ambiente de produção e pode conter erros. Além disso, a segurança não foi levada em consideração neste projeto.</p>
