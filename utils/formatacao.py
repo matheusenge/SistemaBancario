@@ -4,15 +4,13 @@ def date_para_str(data: date) -> str:
     return data.strftime('%d/%m/%Y')
 
 
-def str_para_date(data: str) -> date:
-    return datetime.strptime(data, '%d/%m/%Y')
+def str_para_date(data: str, formato: str = '%d/%m/%Y') -> date:
+    return datetime.strptime(data, formato).date()
 
 
 def formata_str_float(valor: float) -> str:
-    return f'R${valor:,.2f}'
+    return f'R${valor:,.2f}'.replace(',', '.')
 
 
 def horas() -> str:
-    hora = datetime.now()
-    hora = hora.strftime("%H:%M")
-    return hora
+    return datetime.now().strftime("%H:%M")
