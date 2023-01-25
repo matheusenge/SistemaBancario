@@ -1,17 +1,12 @@
-from datetime import date
 from utils.formatacao import str_para_date, date_para_str
-from random import randint
 
 class Cliente:
-    identificador: int = randint(1, 500)
-
-    def __init__(self: object, nome: str, email: str, cpf: str, data_nascimento: str) -> None:
-        self.__id: int = Cliente.identificador
-        self.__nome: str = nome
-        self.__email: str = email
-        self.__cpf: str = cpf
-        self.__data_nascimento: date = str_para_date(data_nascimento)
-        Cliente.identificador += randint(1, 10)
+    def __init__(self, nome: str, email: str, cpf: str, data_nascimento: str) -> None:
+        self.__id = id(self)
+        self.__nome = nome
+        self.__email = email
+        self.__cpf = cpf
+        self.__data_nascimento = str_para_date(data_nascimento)
 
 
     @property
@@ -27,7 +22,7 @@ class Cliente:
         return self.__email
 
     @email.setter
-    def email(self: object, email: float) -> None:
+    def email(self: object, email: str) -> None:
         self.__email = email
 
     @property
@@ -40,4 +35,4 @@ class Cliente:
 
     
     def __str__(self: object) -> str:
-        return f'ID: {self.identificador} \nNome: {self.nome} \nE-mail: {self.email} \nCPF: {self.cpf} \nData de Nasc.: {self.data_nascimento}'
+        return f'ID: {self.__id} \nNome: {self.__nome} \nE-mail: {self.__email} \nCPF: {self.__cpf} \nData de Nasc.: {self.__data_nascimento}'
