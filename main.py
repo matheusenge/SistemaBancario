@@ -1,52 +1,42 @@
 import os
-from time import sleep
-from typing import List
-from banco.cliente import *
-from banco.conta import *
-from utils.funcscomplementares import *
+from typing import List, Callable
+from banco.cliente import Cliente
+from banco.conta import Conta
+from utils.funcscomplementares import menu, criar_conta, listar_contas, atualizar_dados, excluir_conta, metodo_deposito_saque, transferencia
 
-os.system('cls')
-
-contas: List[Conta] = []
-
-def main():
+def main() -> None:
+    contas: List[Conta] = []
+    os.system('cls' if os.name == 'nt' else 'clear')
+    
+    opcoes = {
+        1: criar_conta,
+        2: listar_contas,
+        3: atualizar_dados,
+        4: excluir_conta,
+        5: metodo_deposito_saque,
+        6: transferencia,
+        0: 'exit'
+    }
     while True:
         menu()
         opcao = input('> ')
         if not opcao.isdigit():
             print('Insira um número entre 1/6 - Sair do sistema [0].')
-            sleep(1)
             continue
         opcao = int(opcao)
-        if opcao == 1:
-            dados = criar_conta(Cliente)
-            cliente = Cliente(dados.nome, dados.email, dados.cpf, dados.data_nascimento)
-            conta = Conta(cliente)
-            contas.append(conta)
-            sleep(1)
-
-        elif opcao == 2:
-            listar_contas(contas)
-
-        elif opcao == 3:
-            atualizar_dados(contas)
-
-        elif opcao == 4:
-            excluir_conta(contas)
-
-        elif opcao == 5:
-            metodo_deposito_saque(contas)
-
-        elif opcao == 6:
-            transferencia(contas)
-
-        elif opcao == 0:
-            print('Obrigado! Até logo...')
-            sleep(1)
-            break
-        
-        else:
+        if opcao not in opcoes:
             print('Opção inválida, tente novamente:')
+            continue
+        if opcao == 0:
+            print('Obrigado! Até logo...')
+            break
+        else:
+            funcao: Callable = opcoes[opcao]
+            if opcao == 1:
+                cliente = funcao(Cliente)
+                conta = Conta(cliente)
+                contas.append(conta)
+            else:
+                funcao(contas)
 
-
-if __name__ == '__main__': main()
+main()
