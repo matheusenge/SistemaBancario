@@ -1,7 +1,7 @@
 
 import os
 from time import sleep
-
+from typing import List, Tuple
 from banco.conta import *
 from utils.validacoes import *
 
@@ -19,41 +19,33 @@ def menu():
     print(options)
 
 
-def criar_conta(dadosUsuario):
-    while True:
-        nome = input('Informe seu nome: ').title().strip()
-        if valida_nome(nome): break
-        else:
+def criar_conta(dadosUsuario: type) -> Tuple[str, str, str, datetime]:
+    nome = input('Informe seu nome: ').strip()
+    while not valida_nome(nome):
             print("Nome inválido.")
-            continue
-    
-    while True:
-        email = input('Insira seu E-mail: ')
-        if valida_email(email): break
-        else:
-            print('Insira um E-mail válido.')
-            continue 
+            nome = input('Informe seu nome: ').strip()
 
-    while True:
-        cpf = input('Insira seu CPF: ')
-        if valida_cpf(cpf): break
-        else:
+    email = input('Insira seu E-mail: ')
+    while not valida_email(email):
+            print('Insira um E-mail válido.')
+            email = input('Insira seu E-mail: ')
+
+    cpf = input('Insira seu CPF: ')
+    while not valida_cpf(cpf):
             print('CPF inválido.')
-            continue
-    
-    while True:
-        data_nascimento = input('Informe sua data de nascimento com [/]: ')
-        if valida_data(data_nascimento): break
-        else:
+            cpf = input('Insira seu CPF: ')
+
+    data_nascimento = input('Informe sua data de nascimento com [/]: ')
+    while not valida_data(data_nascimento):
             print('Data de nascimento inválida.')
-            continue
+            data_nascimento = input('Informe sua data de nascimento com [/]: ')
 
     pessoa = dadosUsuario(nome, email, cpf, data_nascimento)
     print('Conta criada com sucesso!')
     return pessoa
 
 
-def listar_contas(contas):
+def listar_contas(contas: List[Conta]):
     if not contas:
         senao()
         return
@@ -66,10 +58,10 @@ def listar_contas(contas):
         print(f'Data Nasc.: {conta.cliente.data_nascimento}')
         print(f'Saldo: {formata_str_float(conta.saldo)}')
         print(f'Limite: {formata_str_float(conta.limite)}')
-        print('-=' * 20)
+        print('-' * 40)
 
 
-def atualizar_dados(contas):
+def atualizar_dados(contas: List[Conta]) -> None:
     if not contas:
         senao()
         return
@@ -90,7 +82,7 @@ def atualizar_dados(contas):
         print(f'Agência "{agencia}" não encontrada.')
 
 
-def excluir_conta(contas):
+def excluir_conta(contas: List[Conta]) -> None:
     if not contas:
         senao()
         return
@@ -98,40 +90,32 @@ def excluir_conta(contas):
     agencia = int(input('Informe a agência: '))
     contas_a_excluir = [conta for conta in contas if conta.agencia == agencia]
     if contas_a_excluir:
-        for conta in contas_a_excluir:
-            contas.remove(conta)
+        contas[:] = [conta for conta in contas if conta.agencia != agencia]
         print('Conta excluída com sucesso.')
     else:
         print(f'Não foi encontrada a agência "{agencia}"')
 
 
-def metodo_deposito_saque(contas):
+def metodo_deposito_saque(contas: List[Conta]) -> None:
     if not contas:
         senao()
         return
 
     escolha_metodo = int(input('Deseja realizar depósito(1) ou saque(2)?'))
 
-    if escolha_metodo == 1:
-        agencia = int(input('Informe o número da sua agência para depositar: '))
+    if escolha_metodo in [1, 2]:
+        agencia = int(input('Informe o número da sua agência: '))
         conta = next((conta for conta in contas if conta.agencia == agencia), None)
         if conta:
-            valor_deposito = float(input('Informe o valor: '))
-            conta.depositar(valor_deposito)
-
-        else:
-            print(f'Não foi encontrada a agência "{agencia}"')
-    elif escolha_metodo == 2:
-        agencia = int(input('Informe o número da sua agência para saque: '))
-        conta = next((conta for conta in contas if conta.agencia == agencia), None)
-        if conta:
-            valor_saque = float(input('Informe o valor: '))
-            conta.sacar(valor_saque)
-
+            valor = float(input('Informe o valor: '))
+            if escolha_metodo == 1:
+                conta.depositar(valor)
+            else:
+                conta.sacar(valor)
         else:
             print(f'Não foi encontrada a agência "{agencia}"')
     else:
-        print("Entrada inválida")
+        print("Opção inválida")
         
 
 def transferencia(contas):
@@ -158,7 +142,7 @@ def transferencia(contas):
             print(f'Agência de saque "{agencia_saque}" não encontrada')
         if not conta_deposito:
             print(f'Agência de deposito "{agencia_deposito}" não encontrada')
-    
+
 
 def senao():
     print('Nenhuma conta cadastrada.')
