@@ -20,29 +20,32 @@ def menu():
 
 
 def criar_conta(dadosUsuario: type) -> Tuple[str, str, str, datetime]:
-    nome = input('Informe seu nome: ').strip()
-    while not valida_nome(nome):
-            print("Nome inválido.")
-            nome = input('Informe seu nome: ').strip()
+    try:
+        nome = input('Informe seu nome: ').strip()
+        while not valida_nome(nome):
+                print("Nome inválido.")
+                nome = input('Informe seu nome: ').strip()
 
-    email = input('Insira seu E-mail: ')
-    while not valida_email(email):
-            print('Insira um E-mail válido.')
-            email = input('Insira seu E-mail: ')
+        email = input('Insira seu E-mail: ')
+        while not valida_email(email):
+                print('Insira um E-mail válido.')
+                email = input('Insira seu E-mail: ')
 
-    cpf = input('Insira seu CPF: ')
-    while not valida_cpf(cpf):
-            print('CPF inválido.')
-            cpf = input('Insira seu CPF: ')
+        cpf = input('Insira seu CPF: ')
+        while not valida_cpf(cpf):
+                print('CPF inválido.')
+                cpf = input('Insira seu CPF: ')
 
-    data_nascimento = input('Informe sua data de nascimento com [/]: ')
-    while not valida_data(data_nascimento):
-            print('Data de nascimento inválida.')
-            data_nascimento = input('Informe sua data de nascimento com [/]: ')
+        data_nascimento = input('Informe sua data de nascimento com [/]: ')
+        while not valida_data(data_nascimento):
+                print('Data de nascimento inválida.')
+                data_nascimento = input('Informe sua data de nascimento com [/]: ')
 
-    pessoa = dadosUsuario(nome, email, cpf, data_nascimento)
-    print('Conta criada com sucesso!')
-    return pessoa
+        pessoa = dadosUsuario(nome, email, cpf, data_nascimento)
+        print('Conta criada com sucesso!')
+        return pessoa
+    except Exception as e:
+        print(f'A conta não pôde ser criada. {e}')
 
 
 def listar_contas(contas: List[Conta]):
@@ -66,7 +69,12 @@ def atualizar_dados(contas: List[Conta]) -> None:
         senao()
         return
 
-    agencia = int(input('Informe sua agência: '))
+    try:
+        agencia = int(input('Informe sua agência: '))
+    except ValueError:
+        print("Por favor, informe um valor numérico para agência.")
+        return
+
     conta_atualizar = next((conta for conta in contas if conta.agencia == agencia), None)
     if conta_atualizar:
         while True:
@@ -87,7 +95,12 @@ def excluir_conta(contas: List[Conta]) -> None:
         senao()
         return
 
-    agencia = int(input('Informe a agência: '))
+    try:
+        agencia = int(input('Informe a agência: '))
+    except ValueError:
+        print("Por favor, informe um valor numérico para agência.")
+        return
+
     contas_a_excluir = [conta for conta in contas if conta.agencia == agencia]
     if contas_a_excluir:
         contas[:] = [conta for conta in contas if conta.agencia != agencia]
@@ -109,39 +122,47 @@ def metodo_deposito_saque(contas: List[Conta]) -> None:
         if conta:
             valor = float(input('Informe o valor: '))
             if escolha_metodo == 1:
-                conta.depositar(valor)
+                try:
+                    conta.depositar(valor)
+                except ValueError as e:
+                    print(f'Deposito falhou, {e}')
             else:
-                conta.sacar(valor)
+                try:
+                    conta.sacar(valor)
+                except ValueError as e:
+                    print(f'Saque falhou, {e}')
         else:
             print(f'Não foi encontrada a agência "{agencia}"')
     else:
         print("Opção inválida")
         
 
-def transferencia(contas):
+def transferencia(contas: List[Conta]) -> None:
     if not contas:
         senao()
         return
 
-    agencia_saque = int(input('Informe a agência: '))
-    agencia_deposito = int(input('Informa a agência que deseja depositar: '))
-    valor = float(input('Valor que deseja depositar: '))
+    try:
+        agencia_saque = int(input('Informe a agência de saque: '))
+        agencia_deposito = int(input('Informe a agência de depósito: '))
+        valor = float(input('Valor que deseja transferir: '))
+    except ValueError:
+        print("Por favor, informe um valor numérico para agência e valor.")
+        return
 
     conta_saque = next((conta for conta in contas if conta.agencia == agencia_saque), None)
     conta_deposito = next((conta for conta in contas if conta.agencia == agencia_deposito), None)
     
-    if conta_saque and conta_deposito:
-        if conta_saque.saldo >= valor:
-            conta_saque.sacar(valor)
-            conta_deposito.depositar(valor)
-            print('Transferência realizada com sucesso!')
-        else:
-            print('Você não tem saldo suficiente.')
+    if not conta_saque:
+        print(f'Agência de saque "{agencia_saque}" não encontrada.')
+    elif not conta_deposito:
+        print(f'Agência de depósito "{agencia_deposito}" não encontrada.')
+    elif conta_saque.saldo < valor:
+        print('Você não tem saldo suficiente.')
     else:
-        if not conta_saque:
-            print(f'Agência de saque "{agencia_saque}" não encontrada')
-        if not conta_deposito:
-            print(f'Agência de deposito "{agencia_deposito}" não encontrada')
+        conta_saque.sacar(valor)
+        conta_deposito.depositar(valor)
+        print('Transferência realizada com sucesso!')
 
 
 def senao():
