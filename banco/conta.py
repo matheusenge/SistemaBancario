@@ -46,9 +46,9 @@ class Conta:
         self.__credito = valor
 
     def __str__(self: object) -> str:
-        return f'Número da agência: {self.agencia} \nCliente: {self.cliente.nome} \nSaldo: {formata_str_float(self.saldo)}'
-
+        return f'Número da agência: {self.__agencia} \nCliente: {self.cliente.__nome} \nSaldo: {formata_str_float(self.__saldo)}'
     
+
     def depositar(self: object, valor_deposito: float) -> None:
         self.saldo += valor_deposito
         
@@ -57,45 +57,46 @@ class Conta:
 
     def sacar(self: object, valor_saque: float) -> None:
         credito_disponivel: float = self.limite - self.credito
+        options = {1: 'Sacar no crédito', 2: 'Sacar no crédito e débito'}
+
+        if valor_saque > self.saldo + credito_disponivel:
+            raise ValueError('Valor de saque superior ao limite disponível')
 
         if self.saldo - valor_saque >= 0:
             self.saldo -= valor_saque
             print(f'[{horas()}] Foi debitado {formata_str_float(valor_saque)} da sua conta.')
-            return
         else:
             while True:
-                escolha = int(input('''Escolha uma opção
-                \r1 - Sacar no crédito
-                \r2 - Sacar no crédito e débito\n
-                \rOpção: '''))
+                try:
+                    escolha = int(input(f'Escolha uma opção: {options} \nOpção: '))
+                    if escolha not in options:
+                        raise ValueError('Opção inválida')
+                    break
+                except ValueError as e:
+                    print(e)
 
-                if escolha == 1:
-                    if self.limite < 0 or credito_disponivel < valor_saque:
-                        print('Limite insuficiente.')
-                        return
-                    self.credito += valor_saque
-                    self.limite -= valor_saque
-
-                    print(f'Crédito usado: {formata_str_float(self.credito)}')
-                    print(f'Limite disponível: {formata_str_float(self.limite)}')
-                    return
-                elif escolha == 2:
-                    if self.saldo + credito_disponivel <= 0:
-                        print('Limite insuficiente.')
+            if escolha == 1:
+                if credito_disponivel < valor_saque:
+                    raise ValueError('Limite insuficiente')
+                self.credito += valor_saque
+                self.limite -= valor_saque
+                print(f'Crédito usado: {formata_str_float(self.credito)}')
+                print(f'Limite disponível: {formata_str_float(self.limite)}')
+            elif escolha == 2:
+                while True:
+                    try:
+                        valor = float(input('Informe a quantia de saldo que deseja usar: '))
+                        assert valor <= self.saldo, "Saldo insuficiente."
+                        assert valor + credito_disponivel >= valor_saque, "Limite insuficiente."
                         break
-                    valor = float(input('Informe a quantia de saldo que deseja usar: '))
-                    if self.saldo - valor < 0:
-                        print('Saldo insuficiente.')
-                        return
-                    if valor + credito_disponivel < valor_saque:
-                        print('Limite insuficiente.')
-                        return
-                    self.credito += valor_saque - valor
-                    self.limite -= valor_saque - valor
-                    self.saldo -= valor
-                    print(f'Limite atual: {formata_str_float(self.limite)}')
-                    print(f'Saldo atual: {formata_str_float(self.saldo)}')
-                    return
-                else:
-                    print('Informe uma opção válida.')
-                    continue
+                    except ValueError:
+                        print("Informe um valor válido.")
+                    except AssertionError as e:
+                        print(e)
+                        continue
+
+                self.credito += valor_saque - valor
+                self.limite -= valor_saque - valor
+                self.saldo -= valor
+                print(f'Limite atual: {formata_str_float(self.limite)}')
+                print(f'Saldo atual: {formata_str_float(self.saldo)}')
