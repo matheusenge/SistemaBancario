@@ -23,10 +23,10 @@ def menu():
 
 def criar_conta(dadosUsuario: type) -> Tuple[str, str, str, datetime]:
     try:
-        nome = input('Informe seu nome: ').strip()
+        nome = input('Informe seu nome: ').strip().title()
         while not valida_nome(nome):
                 print("Nome inválido.")
-                nome = input('Informe seu nome: ').strip()
+                nome = input('Informe seu nome: ').strip().title()
 
         email = input('Insira seu E-mail: ')
         while not valida_email(email):
@@ -119,7 +119,7 @@ def excluir_cadastro(contas: List[Conta]) -> None:
                 conta = contas[indice]
                 contas.remove(conta)
                 salvar_contas(contas)
-                print(f'Conta de {conta.cliente.nome} - Conta: {conta.agencia} foi excluída com sucesso.')
+                print(f'Conta de {conta.cliente.nome}\nAgência: {conta.agencia}\nExcluída com sucesso.')
                 return
 
 
