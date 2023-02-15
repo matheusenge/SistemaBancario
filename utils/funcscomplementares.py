@@ -1,7 +1,9 @@
 
 import os
+import pickle
 from time import sleep
 from typing import List, Tuple
+
 from banco.conta import *
 from utils.validacoes import *
 
@@ -44,16 +46,19 @@ def criar_conta(dadosUsuario: type) -> Tuple[str, str, str, datetime]:
         pessoa = dadosUsuario(nome, email, cpf, data_nascimento)
         print('Conta criada com sucesso!')
         return pessoa
+        
     except Exception as e:
         print(f'A conta não pôde ser criada. {e}')
 
 
-def listar_contas(contas: List[Conta]):
+def listar_cadastros(contas: List[Conta]) -> None:
     if not contas:
         senao()
         return
 
-    for conta in contas:
+    print('Lista de contas:')
+    for i, conta in enumerate(contas):
+        print(f'{i + 1}.')
         print(f'Agência: {conta.agencia}')
         print(f'Nome: {conta.cliente.nome}')
         print(f'E-mail: {conta.cliente.email}')
@@ -82,6 +87,7 @@ def atualizar_dados(contas: List[Conta]) -> None:
             if valida_email(novo_email):
                 conta_atualizar.cliente.email = novo_email
                 print('E-mail atualizado com sucesso.')
+                salvar_contas(contas)
                 break
             else:
                 print('Insira um E-mail válido.')
@@ -90,23 +96,31 @@ def atualizar_dados(contas: List[Conta]) -> None:
         print(f'Agência "{agencia}" não encontrada.')
 
 
-def excluir_conta(contas: List[Conta]) -> None:
+def excluir_cadastro(contas: List[Conta]) -> None:
     if not contas:
         senao()
         return
-
-    try:
-        agencia = int(input('Informe a agência: '))
-    except ValueError:
-        print("Por favor, informe um valor numérico para agência.")
-        return
-
-    contas_a_excluir = [conta for conta in contas if conta.agencia == agencia]
-    if contas_a_excluir:
-        contas[:] = [conta for conta in contas if conta.agencia != agencia]
-        print('Conta excluída com sucesso.')
-    else:
-        print(f'Não foi encontrada a agência "{agencia}"')
+    
+    print('Selecione a conta que deseja excluir:')
+    for i, conta in enumerate(contas):
+        print(f'{i + 1}. {conta.cliente.nome} - Conta: {conta.agencia}')
+    
+    while True:
+        escolha = input('Digite o número da conta ou [0] para cancelar: ')
+        if escolha == '0':
+            return
+        elif not escolha.isdigit():
+            print('Por favor, insira um número válido.')
+        else:
+            indice = int(escolha) - 1
+            if indice < 0 or indice >= len(contas):
+                print('Por favor, selecione uma opção válida.')
+            else:
+                conta = contas[indice]
+                contas.remove(conta)
+                salvar_contas(contas)
+                print(f'Conta de {conta.cliente.nome} - Conta: {conta.agencia} foi excluída com sucesso.')
+                return
 
 
 def metodo_deposito_saque(contas: List[Conta]) -> None:
@@ -124,6 +138,7 @@ def metodo_deposito_saque(contas: List[Conta]) -> None:
             if escolha_metodo == 1:
                 try:
                     conta.depositar(valor)
+                    salvar_contas(contas)
                 except ValueError as e:
                     print(f'Deposito falhou, {e}')
             else:
@@ -163,9 +178,32 @@ def transferencia(contas: List[Conta]) -> None:
         conta_saque.sacar(valor)
         conta_deposito.depositar(valor)
         print('Transferência realizada com sucesso!')
+        salvar_contas(contas)
+
+
+def carregar_contas() -> List[Conta]:
+    try:
+        if os.path.exists('contas.dat'):
+            with open('contas.dat', 'rb') as file:
+                return pickle.load(file)
+        else:
+            with open('contas.dat', 'wb') as file:
+                pickle.dump([], file)
+            return []
+    except (FileNotFoundError, EOFError, pickle.UnpicklingError) as error:
+        print(f"Erro ao carregar contas: {error}")
+        return []
+
+
+def salvar_contas(contas: List[Conta]) -> None:
+    try:
+        with open('contas.dat', 'wb') as file:
+            pickle.dump(contas, file)
+    except (FileNotFoundError, EOFError, pickle.PicklingError) as error:
+        print(f"Erro ao salvar contas: {error}")
 
 
 def senao():
-    print('Nenhuma conta cadastrada.')
+    print('Não há contas cadastradas.')
     sleep(1)
     os.system('cls')
