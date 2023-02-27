@@ -37,6 +37,7 @@ def criar_conta(dadosUsuario: type) -> Tuple[str, str, str, datetime]:
         while not valida_cpf(cpf):
                 print('CPF inválido.')
                 cpf = input('Insira seu CPF: ')
+        cpf = formata_cpf(cpf)
 
         data_nascimento = input('Informe sua data de nascimento com [/]: ')
         while not valida_data(data_nascimento):
@@ -103,7 +104,7 @@ def excluir_cadastro(contas: List[Conta]) -> None:
     
     print('Selecione a conta que deseja excluir:')
     for i, conta in enumerate(contas):
-        print(f'{i + 1}. {conta.cliente.nome} - Conta: {conta.agencia}')
+        print(f'{i + 1}. {conta.cliente.nome} - CPF: {conta.cliente.cpf}')
     
     while True:
         escolha = input('Digite o número da conta ou [0] para cancelar: ')
@@ -119,7 +120,7 @@ def excluir_cadastro(contas: List[Conta]) -> None:
                 conta = contas[indice]
                 contas.remove(conta)
                 salvar_contas(contas)
-                print(f'Conta de {conta.cliente.nome}\nAgência: {conta.agencia}\nExcluída com sucesso.')
+                print(f'Conta de:\nTitular: {conta.cliente.nome}\nCPF: {conta.cliente.cpf}\nExcluída com sucesso.')
                 return
 
 
