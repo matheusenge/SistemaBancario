@@ -1,6 +1,7 @@
-from datetime import datetime
 import re
-from typing import Union, Match, Pattern
+from datetime import datetime
+from typing import Match, Pattern, Union
+
 
 def valida_nome(nome: str) -> bool:
     pattern: Pattern[str] = re.compile(r'^[a-zA-Z0-9 ]+$')
@@ -26,6 +27,11 @@ def valida_cpf(cpf: str) -> bool:
     check_digito_2 = (sum(digitos[i] * (11 - i) for i in range(10)) * 10 % 11) % 10
 
     return check_digito_1 == digitos[9] and check_digito_2 == digitos[10]
+
+
+def formata_cpf(cpf: str) -> str:
+    cpf_formatado = f"{cpf[:3]}.{cpf[3:6]}.{cpf[6:9]}-{cpf[9:]}"
+    return cpf_formatado
 
 
 def valida_data(data: str) -> Union[datetime, str]:
