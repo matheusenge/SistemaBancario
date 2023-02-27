@@ -1,8 +1,11 @@
+from random import randint
+
 from banco.cliente import *
 from utils.formatacao import *
 
+
 class Conta:
-    codigo: int = 1
+    codigo: int = randint(1, 9999)
 
     def __init__(self: object, cliente: Cliente) -> None:
         self.__agencia: int = Conta.codigo
@@ -10,7 +13,6 @@ class Conta:
         self.__saldo: float = 0.0
         self.__limite: float = 500.00
         self.__credito: float = 0.0
-        Conta.codigo += 1
 
 
     @property
