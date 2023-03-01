@@ -1,3 +1,4 @@
+import logging
 import os
 from typing import Callable, List
 
@@ -7,6 +8,8 @@ from utils.funcscomplementares import *
 
 
 def main() -> None:
+    logging.basicConfig(filename='transacoes.log', level=logging.INFO,
+                    format='%(asctime)s - %(levelname)s - %(message)s')
     contas: List[Conta] = carregar_contas()
     os.system('cls' if os.name == 'nt' else 'clear')
     
