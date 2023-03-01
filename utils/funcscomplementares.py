@@ -1,4 +1,5 @@
 
+import logging
 import os
 import pickle
 from time import sleep
@@ -25,24 +26,24 @@ def criar_conta(dadosUsuario: type) -> Tuple[str, str, str, datetime]:
     try:
         nome = input('Informe seu nome: ').strip().title()
         while not valida_nome(nome):
-                print("Nome inválido.")
-                nome = input('Informe seu nome: ').strip().title()
+            print("Nome inválido.")
+            nome = input('Informe seu nome: ').strip().title()
 
         email = input('Insira seu E-mail: ')
         while not valida_email(email):
-                print('Insira um E-mail válido.')
-                email = input('Insira seu E-mail: ')
+            print('Insira um E-mail válido.')
+            email = input('Insira seu E-mail: ')
 
         cpf = input('Insira seu CPF: ')
         while not valida_cpf(cpf):
-                print('CPF inválido.')
-                cpf = input('Insira seu CPF: ')
+            print('CPF inválido.')
+            cpf = input('Insira seu CPF: ')
         cpf = formata_cpf(cpf)
 
         data_nascimento = input('Informe sua data de nascimento com [/]: ')
         while not valida_data(data_nascimento):
-                print('Data de nascimento inválida.')
-                data_nascimento = input('Informe sua data de nascimento com [/]: ')
+            print('Data de nascimento inválida.')
+            data_nascimento = input('Informe sua data de nascimento com [/]: ')
 
         pessoa = dadosUsuario(nome, email, cpf, data_nascimento)
         print('Conta criada com sucesso!')
@@ -142,6 +143,7 @@ def metodo_deposito_saque(contas: List[Conta]) -> None:
                     if escolha_metodo == 1:
                         try:
                             conta.depositar(valor)
+                            logging.info(f'{conta.cliente.nome} realizou um depósito de R${valor:.2f}.')
                             salvar_contas(contas)
                             break
                         except ValueError as e:
@@ -149,6 +151,7 @@ def metodo_deposito_saque(contas: List[Conta]) -> None:
                     else:
                         try:
                             conta.sacar(valor)
+                            logging.info(f'{conta.cliente.nome} realizou um saque de R${valor:.2f}.')
                             break
                         except ValueError as e:
                             print(f'Saque falhou, {e}')
@@ -218,6 +221,7 @@ def transferencia(contas: List[Conta]) -> None:
             if confirma:
                 conta_saque.sacar(valor)
                 conta_deposito.depositar(valor)
+                logging.info(f'{conta_saque.cliente.nome} realizou uma transferência de R${valor:.2f} para {conta_deposito.cliente.nome}')
                 print(f'[{horas()}] Transferência realizada com sucesso!')
                 salvar_contas(contas)
                 break
