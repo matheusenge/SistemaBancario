@@ -5,10 +5,9 @@ from utils.formatacao import *
 
 
 class Conta:
-    codigo: int = randint(1, 9999)
-
     def __init__(self: object, cliente: Cliente) -> None:
-        self.__agencia: int = Conta.codigo
+        self.__codigo: int = randint(1, 9999)
+        self.__agencia: int = self.__codigo // 1000
         self.__cliente: Cliente = cliente
         self.__saldo: float = 0.0
         self.__limite: float = 500.00
@@ -54,7 +53,7 @@ class Conta:
     def depositar(self: object, valor_deposito: float) -> None:
         self.saldo += valor_deposito
         
-        print(f'''[{horas()}] Depósito realizado no valor de R${valor_deposito:,.2f}\nAG: {self.agencia} | Nome: {self.cliente.nome} | CPF: {self.cliente.cpf}''')
+        print(f'''[{horas()}] Depósito realizado no valor de R${valor_deposito:,.2f} para:\nAG: {self.agencia} | Nome: {self.cliente.nome} | CPF: {self.cliente.cpf}''')
 
 
     def sacar(self: object, valor_saque: float) -> None:
